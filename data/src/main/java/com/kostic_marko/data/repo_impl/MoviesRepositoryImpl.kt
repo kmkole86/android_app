@@ -27,24 +27,27 @@ class MoviesRepositoryImpl(
             .map { movies -> movies.map { it.mapToDomain() } }
             .flowOn(dispatcher)
 
-    override fun fetchMoviePage(cursor: Int): Flow<MoviesResult> = flow<MoviesResult> {
-        if (cursor == 1) databaseDataSource.clearMoviesCache()
-        apiDataSource.fetchPage(cursor = cursor).onSuccess { page ->
-            databaseDataSource.cacheMovies(page)
-            emit(
-                MoviesResult.MoviesSuccess(
-                    nextPageCursor = if (page.ordinal < page.totalPages) page.ordinal + 1 else null
+    override fun fetchMoviePage(text: String, pageCursor: Int): Flow<MoviesResult> =
+        flow<MoviesResult> {
+            if (pageCursor == 1) databaseDataSource.clearMoviesCache()
+            apiDataSource.fetchPage(text = text, pageCursor = pageCursor).onSuccess { page ->
+                databaseDataSource.cacheMovies(page)
+
+                val hasMorePages = page.ordinal < page.totalPages
+                emit(
+                    MoviesResult.MoviesSuccess(
+                        nextPageCursor = if (hasMorePages) page.ordinal + 1 else null
+                    )
                 )
-            )
-        }.onFailure {
-            emit(
-                MoviesResult.MoviesFailed(
-                    error = MoviesError.GenericError, nextPageCursor = cursor
+            }.onFailure {
+                emit(
+                    MoviesResult.MoviesFailed(
+                        error = MoviesError.GenericError, pageCursor = pageCursor
+                    )
                 )
-            )
-        }
-    }.onStart { emit(MoviesResult.MoviesLoading(nextPageCursor = cursor)) }
-        .flowOn(dispatcher)
+            }
+        }.onStart { emit(MoviesResult.MoviesLoading(pageCursor = pageCursor)) }
+            .flowOn(dispatcher)
 
     override fun changeMovieFavouriteStatus(id: Int): Flow<FavouriteStatusResult> =
         flow<FavouriteStatusResult> {
@@ -66,7 +69,7 @@ class MoviesRepositoryImpl(
         apiDataSource.fetchMovieDetails(id = id).onSuccess { movieDetails ->
             emit(
                 MovieDetailsResult.MovieDetailsSuccess(
-                    movieDetails =movieDetails.mapToDomain()
+                    movieDetails = movieDetails.mapToDomain()
                 )
             )
         }.onFailure {

@@ -5,7 +5,7 @@ import com.kostic_marko.data.model.MoviePageData
 
 interface MovieApiDataSource {
 
-    suspend fun fetchPage(cursor: Int): Result<MoviePageData>
+    suspend fun fetchPage(text: String, pageCursor: Int): Result<MoviePageData>
 
     suspend fun fetchMovieDetails(id: Int): Result<MovieDetailsData>
 }

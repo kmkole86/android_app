@@ -17,7 +17,7 @@ data class MovieWithFavouriteDb(
     @PrimaryKey @ColumnInfo(name = ID) val id: Int,
     @ColumnInfo(name = TITLE) val title: String,
     @ColumnInfo(name = OVERVIEW) val overview: String,
-    @ColumnInfo(name = POSTER_PATH) val posterPath: String,
+    @ColumnInfo(name = POSTER_PATH) val posterPath: String?,
     @ColumnInfo(name = RELEASE_DATE) val releaseDate: String,
     @ColumnInfo(name = VOTE_AVERAGE) val voteAverage: Float,
     @ColumnInfo(name = VOTE_COUNT) val voteCount: Int,

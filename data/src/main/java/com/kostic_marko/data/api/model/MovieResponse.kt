@@ -12,7 +12,7 @@ internal data class MovieResponse(
     @SerialName(value = "overview")
     val overview: String,
     @SerialName(value = "poster_path")
-    val posterPath: String,
+    val posterPath: String?,
     @SerialName(value = "release_date")
     val releaseDate: String,
     @SerialName(value = "vote_average")

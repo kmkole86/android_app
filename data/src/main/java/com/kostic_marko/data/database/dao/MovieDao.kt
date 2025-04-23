@@ -41,6 +41,9 @@ interface MovieDao {
     @Query("SELECT * from ${MovieDb.ENTITY_NAME} INNER JOIN ${MoviesIndexDb.ENTITY_NAME} ON ${MovieDb.ID} = ${MoviesIndexDb.ID} LEFT JOIN ${FavouriteIndexDb.ENTITY_NAME} ON ${MovieDb.ID} = ${FavouriteIndexDb.ID} ORDER BY ${MovieDb.PAGE_ORDINAL}, ${MovieDb.TITLE} ASC")
     fun observeMovies(): Flow<List<MovieWithFavouriteDb>>
 
+    @Query("SELECT * from ${MovieDb.ENTITY_NAME}")
+    fun getMovies(): List<MovieDb>
+
     @Query("SELECT * from ${MovieDb.ENTITY_NAME} as Movies INNER JOIN ${FavouriteIndexDb.ENTITY_NAME} AS Favourites ON Movies.id = Favourites.favourite_index_id ORDER BY Movies.page_ordinal, Movies.title ASC")
     fun observeFavouriteMovies(): Flow<List<MovieWithFavouriteDb>>
 
@@ -52,7 +55,6 @@ interface MovieDao {
 
     @Query("SELECT EXISTS(SELECT * FROM ${FavouriteIndexDb.ENTITY_NAME} WHERE ${FavouriteIndexDb.ID}=:id)")
     suspend fun getFavouriteStatus(id: Int): Boolean
-
 
     @Query("SELECT EXISTS(SELECT * FROM ${FavouriteIndexDb.ENTITY_NAME} WHERE ${FavouriteIndexDb.ID}=:id)")
     fun observeFavouriteStatus(id: Int): Flow<Boolean>

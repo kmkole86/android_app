@@ -18,7 +18,7 @@ val apiModule = module {
 
             install(DefaultRequest) {
                 url {
-                    url("https://api.themoviedb.org/3/movie/")
+                    url("https://api.themoviedb.org/3/")
                     parameters.append("api_key", "a794ee27f47722d30bc1c67e3df3522a")
                 }
             }

@@ -12,21 +12,29 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 
 const val PAGE_PARAMETER_KEY = "page"
+const val QUERY_PARAMETER_KEY = "query"
 
 internal class MovieApiDataSourceImpl(private val client: HttpClient) : MovieApiDataSource {
 
-    override suspend fun fetchPage(cursor: Int): Result<MoviePageData> =
-        runCatchingCancelable {
-            client.get("top_rated") {
+    override suspend fun fetchPage(text: String, pageCursor: Int): Result<MoviePageData> =
+        if (text.isEmpty()) runCatchingCancelable {
+            client.get("movie/top_rated") {
                 url {
-                    parameters.append(PAGE_PARAMETER_KEY, cursor.toString())
+                    parameters.append(PAGE_PARAMETER_KEY, pageCursor.toString())
+                }
+            }.body<PageResponse>().mapToData()
+        } else runCatchingCancelable {
+            client.get("search/movie") {
+                url {
+                    parameters.append(QUERY_PARAMETER_KEY, text)
+                    parameters.append(PAGE_PARAMETER_KEY, pageCursor.toString())
                 }
             }.body<PageResponse>().mapToData()
         }
 
     override suspend fun fetchMovieDetails(id: Int): Result<MovieDetailsData> =
         runCatchingCancelable {
-            client.get(id.toString()).body<MovieDetailsResponse>().mapToData()
+            client.get("movie/$id").body<MovieDetailsResponse>().mapToData()
         }
 
 }

@@ -7,21 +7,21 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Favorite
+import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,7 +37,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.kostic_marko.android_app.R
-import com.kostic_marko.android_app.features.common.ui.movie_list.MovieItem
+import com.kostic_marko.android_app.features.common.ui.MovieListMovieItem
 import com.kostic_marko.android_app.features.details.MovieDetailsScreen
 import com.kostic_marko.android_app.features.home.DetailsRoute
 import com.kostic_marko.android_app.features.home.navigateToDetails
@@ -54,14 +54,11 @@ fun FavouritesGraph(modifier: Modifier = Modifier) {
     navController.addOnDestinationChangedListener { _, destination, _ ->
         shouldShowBack = destination.hasRoute<DetailsRoute>()
     }
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        TopAppBar(
+    Column(modifier = modifier.fillMaxSize()) {
+        CenterAlignedTopAppBar(
             title = {
                 Text(
                     "Marko Kostic",
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Start
                 )
             },
             navigationIcon = {
@@ -72,7 +69,8 @@ fun FavouritesGraph(modifier: Modifier = Modifier) {
                         tint = Color.Black
                     )
                 }
-            })
+            },
+        )
         NavHost(
             navController = navController,
             startDestination = FavouritesRoute,
@@ -105,11 +103,11 @@ fun FavouriteScreenEmpty(modifier: Modifier = Modifier) {
         verticalArrangement = Arrangement.Center
     ) {
         Icon(
-            Icons.Outlined.Info,
+            Icons.Outlined.Favorite,
             modifier = Modifier
-                .fillMaxWidth(fraction = 0.5f)
+                .fillMaxWidth(fraction = 0.3f)
                 .aspectRatio(ratio = 1f),
-            contentDescription = "No Favourites Icon"
+            contentDescription = "No Favourites Icon", tint = Color(0xFFE0DEDE)
         )
         Text(
             "You have no\nfavourite movies",
@@ -127,8 +125,9 @@ fun FavouriteScreenList(
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = modifier
+            .fillMaxSize()
+            .padding(horizontal = dimensionResource(R.dimen.spacing_2x)),
         contentPadding = PaddingValues(
             bottom = dimensionResource(id = R.dimen.spacing_2x),
             top = dimensionResource(id = R.dimen.spacing_2x)
@@ -140,7 +139,7 @@ fun FavouriteScreenList(
             movies.size,
             key = { index -> movies[index].id },
             itemContent = { index ->
-                MovieItem(
+                MovieListMovieItem(
                     movie = movies[index],
                     onItemClicked = onItemClicked,
                     onFavouriteClicked = onFavouriteClicked,
@@ -159,7 +158,7 @@ fun FavouritesScreen(
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     when (state) {
-        is FavouritesState.FavouritesStateIdle -> Box(modifier = Modifier.fillMaxWidth()) {
+        is FavouritesState.FavouritesStateIdle -> Box(modifier = modifier.fillMaxWidth()) {
             CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
         }
 

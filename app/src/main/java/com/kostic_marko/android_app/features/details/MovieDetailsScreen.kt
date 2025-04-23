@@ -1,7 +1,5 @@
 package com.kostic_marko.android_app.features.details
 
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -12,12 +10,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Star
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -25,16 +19,18 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 import com.kostic_marko.android_app.R
+import com.kostic_marko.android_app.features.common.ui.FavouriteStatus
+import com.kostic_marko.android_app.features.common.ui.GenericError
+import com.kostic_marko.android_app.features.common.ui.GenericLoading
 import com.kostic_marko.android_app.features.model.MovieDetailsUiModel
 
 @Composable
@@ -42,20 +38,19 @@ fun MovieDetailsScreen(id: Int, modifier: Modifier = Modifier, viewModel: MovieD
     val movieDetails by viewModel.movieDetails.collectAsStateWithLifecycle()
     val favouriteStatus by viewModel.favouriteStatus.collectAsStateWithLifecycle()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+    ) {
         when (val details = movieDetails) {
-            MovieDetailsState.MovieDetailsFailed -> MovieDetailsFailed(onRetryClicked = viewModel::onRetry)
+            MovieDetailsState.MovieDetailsFailed -> GenericError(onRetry = viewModel::onRetry)
             is MovieDetailsState.MovieDetailsLoaded -> MovieDetails(
                 movieDetails = details.movie,
                 onFavouriteClicked = viewModel::onChangeFavouriteStatus,
                 favouriteStatus = favouriteStatus
             )
 
-            MovieDetailsState.MovieDetailsLoading -> Box(modifier = Modifier.fillMaxSize()) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center),
-                )
-            }
+            MovieDetailsState.MovieDetailsLoading -> GenericLoading()
         }
     }
 }
@@ -70,19 +65,23 @@ fun MovieDetails(
 ) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(all = dimensionResource(R.dimen.spacing_2x))
+        modifier = modifier
+            .padding(
+                start = dimensionResource(R.dimen.spacing_2x),
+                end = dimensionResource(R.dimen.spacing_2x),
+                bottom = dimensionResource(R.dimen.spacing_2x)
+            )
             .verticalScroll(rememberScrollState())
     ) {
-
         GlideImage(
             model = "https://image.tmdb.org/t/p/w500${movieDetails.posterPath}",
             contentDescription = "icon",
-            modifier = modifier
+            modifier = Modifier
+                .padding(top = dimensionResource(R.dimen.spacing_1x))
                 .fillMaxWidth()
                 .aspectRatio(ratio = 0.67f)
+                .shadow(elevation = dimensionResource(R.dimen.spacing_0_5x))
                 .clip(RoundedCornerShape(dimensionResource(id = R.dimen.spacing_1x)))
-                .border(width = 1.dp, color = Color.Gray),
         ) {
             it.error(R.drawable.error)
                 .placeholder(R.drawable.image)
@@ -100,7 +99,7 @@ fun MovieDetails(
                 style = MaterialTheme.typography.bodyLarge,
                 fontWeight = FontWeight.Bold
             )
-            MovieFavouriteStatus(
+            FavouriteStatus(
                 onClicked = onFavouriteClicked,
                 favouriteStatus = favouriteStatus
             )
@@ -138,27 +137,5 @@ fun MovieDetails(
                 fontWeight = FontWeight.Bold
             )
         }
-    }
-}
-
-@Composable
-fun MovieDetailsFailed(onRetryClicked: () -> Unit, modifier: Modifier = Modifier) {
-    Text("MovieDetailsFailed")
-}
-
-@Composable
-fun MovieFavouriteStatus(
-    onClicked: () -> Unit,
-    favouriteStatus: Boolean,
-    modifier: Modifier = Modifier
-) {
-    IconButton(
-        modifier = modifier,
-        onClick = onClicked,
-    ) {
-        Icon(
-            if (favouriteStatus) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
-            "Favourite"
-        )
     }
 }

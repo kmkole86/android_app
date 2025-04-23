@@ -1,5 +1,6 @@
-package com.kostic_marko.android_app.features.common.ui.movie_list
+package com.kostic_marko.android_app.features.common.ui
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -10,15 +11,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Favorite
-import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -39,14 +37,14 @@ import com.kostic_marko.android_app.features.model.MovieUiModel
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MovieItem(
+fun MovieListMovieItem(
     movie: MovieUiModel,
     onItemClicked: (Int) -> Unit,
     onFavouriteClicked: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .aspectRatio(ratio = 3f)
             .fillMaxWidth(),
         onClick = {
@@ -54,15 +52,15 @@ fun MovieItem(
         },
         shape = RoundedCornerShape(corner = CornerSize(dimensionResource(id = R.dimen.spacing_2x))),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
+            defaultElevation = dimensionResource(R.dimen.spacing_0_5x)
         )
     ) {
         Row(
-            modifier = modifier.padding(all = dimensionResource(id = R.dimen.spacing_1x)),
+            modifier = Modifier.padding(all = dimensionResource(id = R.dimen.spacing_1x)),
             verticalAlignment = Alignment.Top,
         ) {
             GlideImage(
-                model = "https://image.tmdb.org/t/p/w500${movie.posterPath}",
+                model = "https://image.tmdb.org/t/p/w200${movie.posterPath}",
                 contentDescription = "icon",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
@@ -73,7 +71,7 @@ fun MovieItem(
                 it
                     .error(R.drawable.error)
                     .placeholder(R.drawable.image)
-                    .load("https://image.tmdb.org/t/p/w500${movie.posterPath}")
+                    .load("https://image.tmdb.org/t/p/w200${movie.posterPath}")
             }
             Column(
                 modifier = Modifier
@@ -112,79 +110,50 @@ fun MovieItem(
                     )
                 }
             }
-            IconButton(
-                onClick = { onFavouriteClicked(movie.id) },
-            ) {
-                Icon(
-                    if (movie.isFavourite) Icons.Outlined.Favorite else Icons.Outlined.FavoriteBorder,
-                    "Favourite"
-                )
-            }
+            FavouriteStatus(
+                onClicked = { onFavouriteClicked(movie.id) },
+                favouriteStatus = movie.isFavourite,
+            )
         }
     }
 }
 
 @Composable
-@Preview
-fun LoadingItem(modifier: Modifier = Modifier) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(corner = CornerSize(16.dp)),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
-        )
+fun MovieListLoadingItem(modifier: Modifier = Modifier) {
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = dimensionResource(R.dimen.spacing_2x)),
     ) {
+        CircularProgressIndicator(
+            modifier = Modifier.align(Alignment.Center)
+        )
+    }
+}
+
+@Composable
+fun MovieListErrorItem(
+    onRetryClicked: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
         Text(
-            modifier = modifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
-            text = "Loading",
+            text = "Something went wrong...",
             maxLines = 1,
             textAlign = TextAlign.Center,
             overflow = TextOverflow.Ellipsis,
             style = MaterialTheme.typography.bodyLarge,
             fontWeight = FontWeight.Bold
         )
-        LinearProgressIndicator(
-            modifier = modifier
-                .fillMaxWidth()
-                .padding(bottom = 8.dp, start = 16.dp, end = 16.dp)
-        )
-    }
-}
-
-@Composable
-fun ErrorItem(
-    onRetryClicked: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(corner = CornerSize(16.dp)),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 10.dp
-        )
-    ) {
-        Column(modifier = modifier) {
-            Text(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp, bottom = 8.dp),
-                text = "Something went wrong...",
-                maxLines = 1,
-                textAlign = TextAlign.Center,
-                overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodyLarge,
-                fontWeight = FontWeight.Bold
-            )
-            Button(modifier = modifier
+        Button(
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(all = 16.dp),
-                onClick = { onRetryClicked() }) {
-                Text(text = "Retry")
-            }
+            onClick = { onRetryClicked() }) {
+            Text(text = "Retry")
         }
     }
 }

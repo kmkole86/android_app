@@ -10,7 +10,7 @@ interface MoviesRepository {
 
     fun observeMovies(): Flow<List<Movie>>
 
-    fun fetchMoviePage(cursor: Int): Flow<MoviesResult>
+    fun fetchMoviePage(text: String, pageCursor: Int): Flow<MoviesResult>
 
     fun changeMovieFavouriteStatus(id: Int): Flow<FavouriteStatusResult>
 

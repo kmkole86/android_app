@@ -1,11 +1,11 @@
 package com.kostic_marko.android_app.features.favourites
 
-import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import com.kostic_marko.android_app.features.model.MovieUiModel
 import kotlinx.collections.immutable.ImmutableList
 import kotlinx.collections.immutable.persistentListOf
 
-@Immutable
+@Stable
 sealed class FavouritesState {
 
     abstract val movies: ImmutableList<MovieUiModel>

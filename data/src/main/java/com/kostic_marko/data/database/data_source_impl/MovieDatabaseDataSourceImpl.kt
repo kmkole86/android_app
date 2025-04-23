@@ -5,6 +5,7 @@ import com.kostic_marko.data.database.common.mapToData
 import com.kostic_marko.data.database.common.mapToDb
 import com.kostic_marko.data.database.dao.MovieDao
 import com.kostic_marko.data.database.model.FavouriteIndexDb
+import com.kostic_marko.data.model.MovieData
 import com.kostic_marko.data.model.MoviePageData
 import com.kostic_marko.data.model.MovieWithFavouriteData
 import kotlinx.coroutines.flow.Flow
@@ -23,6 +24,8 @@ internal class MovieDatabaseDataSourceImpl(private val dao: MovieDao) : MovieDat
 
     override fun observeMovies(): Flow<List<MovieWithFavouriteData>> =
         dao.observeMovies().distinctUntilChanged().map { movies -> movies.map { it.mapToData() } }
+
+    override fun getMovies(): List<MovieData> = dao.getMovies().map { it.mapToData() }
 
     override fun observeMovieFavourites(): Flow<List<MovieWithFavouriteData>> =
         dao.observeFavouriteMovies().distinctUntilChanged()
