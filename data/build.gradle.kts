@@ -38,11 +38,12 @@ dependencies {
 
     implementation(project(":domain"))
 
-    //Collections
+    //collections
     implementation(libs.immutable.collections)
 
     //coroutines
     implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
 
     //koin
     implementation(libs.koin.android)
@@ -58,6 +59,9 @@ dependencies {
     implementation(libs.ktor.negotiation)
     implementation(libs.ktor.json.serialization)
     implementation(libs.ktor.logging)
+
+    //mockk
+    testImplementation(libs.mock)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

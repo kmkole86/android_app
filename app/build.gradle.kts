@@ -54,6 +54,7 @@ dependencies {
 
     //coroutines
     implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
 
     //collections
     implementation(libs.immutable.collections)
@@ -70,6 +71,11 @@ dependencies {
     //koin
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+
+    //mockk
+    testImplementation(libs.mock)
+    testImplementation(libs.mock.android)
+    testImplementation(libs.mock.agent)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

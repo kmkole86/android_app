@@ -14,4 +14,8 @@ kotlin {
 dependencies {
     //coroutines
     implementation(libs.coroutines)
+    testImplementation(libs.coroutines.test)
+
+    //mockk
+    testImplementation(libs.mock)
 }

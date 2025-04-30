@@ -17,19 +17,19 @@ sealed class MoviesListState {
         get() = this as? MoviesListStateSuccess
 
     data class MoviesListStateLoading(
-        override val movies: ImmutableList<MovieUiModel>,
         val pageCursor: Int,
+        override val movies: ImmutableList<MovieUiModel>,
     ) : MoviesListState()
 
     data class MoviesListStateFailed(
-        override val movies: ImmutableList<MovieUiModel>,
         val pageCursor: Int,
+        override val movies: ImmutableList<MovieUiModel>,
         val error: MoviesError?
     ) : MoviesListState()
 
     data class MoviesListStateSuccess(
-        override val movies: ImmutableList<MovieUiModel>,
         val nextPageCursor: Int?,
+        override val movies: ImmutableList<MovieUiModel>,
     ) : MoviesListState()
 }
 

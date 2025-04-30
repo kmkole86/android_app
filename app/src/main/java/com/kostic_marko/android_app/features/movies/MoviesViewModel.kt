@@ -61,9 +61,9 @@ class MoviesViewModel(
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = MoviesListState.MoviesListStateSuccess(
+            initialValue = MoviesListState.MoviesListStateLoading(
                 movies = persistentListOf(),
-                nextPageCursor = 1
+                pageCursor = 1
             )
         )
 
