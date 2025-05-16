@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -56,8 +57,8 @@ fun MoviesGraph(modifier: Modifier = Modifier) {
         shouldShowBack = destination.hasRoute<DetailsRoute>()
     }
 
-    Column(modifier = modifier.fillMaxSize()) {
-        CenterAlignedTopAppBar(title = {
+    Column(modifier = modifier.fillMaxWidth()) {
+        CenterAlignedTopAppBar(windowInsets = WindowInsets(top = 0.dp, bottom = 0.dp), title = {
             Text(
                 "Marko Kostic",
             )

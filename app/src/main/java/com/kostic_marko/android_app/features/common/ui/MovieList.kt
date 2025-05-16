@@ -76,6 +76,7 @@ fun MovieListMovieItem(
             Column(
                 modifier = Modifier
                     .weight(1f)
+                    .fillMaxHeight()
                     .padding(start = dimensionResource(R.dimen.spacing_1x))
             ) {
                 Text(
